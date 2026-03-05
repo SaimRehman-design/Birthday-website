@@ -21,6 +21,8 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
   const noButtonRef = useRef<HTMLButtonElement>(null)
+  const musicRef = useRef<HTMLAudioElement | null>(null)
+  const hasStartedMusicRef = useRef(false)
 
   const moveNoButton = useCallback(() => {
     const btn = noButtonRef.current
@@ -109,6 +111,15 @@ function App() {
   const handleIntroStart = () => {
     setIntroPhase('countdown')
     setIntroCountdown(3)
+    if (!hasStartedMusicRef.current && musicRef.current) {
+      hasStartedMusicRef.current = true
+      try {
+        musicRef.current.volume = 0.4
+        void musicRef.current.play()
+      } catch {
+        // ignore autoplay issues
+      }
+    }
   }
 
   const handleIntroNext = () => {
@@ -129,6 +140,11 @@ function App() {
 
   return (
     <div className={appClassName}>
+      <audio
+        ref={musicRef}
+        src="/Via – Jason Fervento _ Relaxing Piano Music.mp3"
+        loop
+      />
       <div className="app-bg" aria-hidden>
         <div className="app-bg-gradient" />
         <div className="app-bg-circles">
